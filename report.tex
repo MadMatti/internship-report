@@ -12,6 +12,8 @@
     pdfpagemode=FullScreen,
 }
 \usepackage[none]{hyphenat}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
 
 
 \title{\huge Internship Report}
@@ -34,14 +36,14 @@
 During my internship experience with Ubroker, I have developed my own data mining project from scratch, developing the necessaries skills and knowledge.\\
 The main objective of the project was to retrieve data about employees, company devices and their usage, and to create reports that would be useful for the company.\\
 The project was developed in Python, language that I learned thanks to the constant support of my colleagues.\\
-The key points of the project could be summarized as follows: data retrieval from Microsoft Azure, through the use of Microsoft Graph APIs, data cleaning and manipulation, data storage in an internal database,
+The key points of the project could be summarized as follows: data retrieval from Microsoft Azure, through the use of Microsoft Graph APIs, data manipulation, data storage in an internal database,
 and the creation of reports.\\
 Although I found the project to be a challenging experience, I found it to be valuable in developing my skills in Python programming, data manipulation and database management.\\
 
 
 \newpage
 \section{Company}
-Ubroker srl was founded in 2015 with the goal of providing clean energy to their clients, without neglecting the need of a competitive price.\\
+Ubroker srl was founded in 2015 with the goal of providing eco-friendly energy to their clients, without neglecting the need of a competitive price.\\
 More information can be found in their \href{https://ubroker.it/}{website}.
 \subsection{Mission}
 The company's mission is to improve the life quality of its clients by granting them a simple management system that allows them to control their energy consumption and a cost saving service, providing 
@@ -52,11 +54,11 @@ involved in the energy distribution process.
 Ubroker is an electricity and gas provider, that collocate itself at the last link of the energy distribution chain. Their working area is indeed the sales to the final client.\\
 The company sales target is the domestic market, the majority of their customers are private citizens. The most recent data report 85,000 active clients, who subscribed 52,000 electricity contracts
 and 32,000 gas contracts.\\
-The peculiarity of Ubroker's market strategy is the system called "scelgo zero". Each client can join the zero project though their \href{https://scelgozero.it/}{platform} and start to reduce to zero their
+The peculiarity of Ubroker's market strategy is the system called \emph{scelgo zero}. Each client can join the zero project though their \href{https://scelgozero.it/}{platform} and start to reduce to zero their
 electricity and gas bill.\\
-On their website, each client may have two options: to zero their bills or to become a coworker of the zero project. The first option allows the clients to reduce their bill, indeed each user will receive points
+On their website, each client may have two options: to become a testimonial and start to zero their bills and the possibility to become an advisor of the zero project. The first option allows the clients to reduce their bill, indeed each user will receive points
 every time they invite a new client and every time an invited user bring in someone else. Through this mechanism, the bill will be proportionally reduced, possibly until zero.
-On the other hand, by choosing the second options, a user may become an external coworker, whose role will be to sell contracts to new potential clients, earning a commission for each new subscription. 
+On the other hand, by choosing the second options, a user may become an external advisor, whose role will be to sell contracts to new potential clients, earning a commission for each new subscription. 
 Moreover, those external partners will have access to a wide range of training courses, that can be chosen and followed on the platform.
 
 \newpage
@@ -74,9 +76,9 @@ Being a computer engineering student, I spent most of my internship in the IT de
 for both internal and external use.\\ 
 The team covers all the aspects of a software life, from the development of the software itself, including both front-end and back-end development, to the integration and the maintenance of the software with the company's 
 infrastructure.\\
-The main projects of the IT department are: the Zero platform, which was described before, several web applications used by the other departments and an internal system for the management of the company's contracts.\\
-All the software are developed using the docker technology, which allows to create a containerized environment, in which the software can be developed, installed and run. The front-end developing is mostly done
-using the JavaScript framework Angular, on the other hand, the back-end developers deals with PHP framework Laminas and the database management is done using the PostgreSQL databases.\\
+The main projects of the IT department are: \emph{Piattaforma Zero}, which was described before, several web applications used by the other departments and an internal system for the management of the company's contracts.\\
+All the software are developed using the Docker technology, which allows to create a containerized environment, in which the software can be developed, installed and run. The front-end developing is mostly done
+using the JavaScript framework Angular, on the other hand, the back-end developers deals with PHP framework Laminas and PostgreSQL databases.\\
 Moreover, I found fascinating how the whole infrastructure is cloud based. The company make indeed an intense use the Azure cloud, which is a cloud computing platform owned by Microsoft, that allows
 to have storage and virtual machines in the cloud. Ubroker uses about 60 virtual machines and over 6 TB of storage on the Azure platform. Thanks to this intense use of this service, the company is recently
 become a Microsoft partner.\\
@@ -84,5 +86,31 @@ My role in the department was to create a software able to retrieve data about e
 
 \newpage
 \section{Project}
+The project can be summarized in 4 main parts:
+\begin{itemize}
+    \item Data retrieval from Microsoft Azure, through the use of Microsoft Graph APIs.
+    \item Data cleaning and manipulation.
+    \item Data storage in an internal database.
+    \item Report creation using Power Bi.
+\end{itemize}
+\subsection{Used technologies}
+The project was entirely written in Python 3.9 programming language and the following libraries were used:
+\begin{verbatim}
+    colorama==0.4.4
+    jsonschema==4.4.0
+    msal==1.17.0
+    pandas==1.4.2   
+    psycopg2==2.9.3
+    requests==2.27.1
+    tabulate==0.8.9
+\end{verbatim}
+For the database management it was chosen to use PostgreSQL, which is a relational database management system.\\
+The project was developed using the GIT version control system, integrated with the hosting system GitHub. These two tools allow to store, modify and share the project's code, as well as to keep a records
+of the activities and modifications done.\\
+The data retrieving was carried out thanks to the Microsoft Graph API, which is a REST API that allows to retrieve data from Microsoft Azure.\\
+Finally, the report creation was done using Power Bi, a Microsoft tool that allows to create reports in a simple and intuitive way.\\
+
+
+
 
 \end{document}
