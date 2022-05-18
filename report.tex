@@ -12,8 +12,7 @@
     pdfpagemode=FullScreen,
 }
 \usepackage[none]{hyphenat}
-\usepackage{tikz}
-\usetikzlibrary{positioning}
+\usepackage{pythonhighlight}
 
 
 \title{\huge Internship Report}
@@ -104,13 +103,34 @@ The project was entirely written in Python 3.9 programming language and the foll
     requests==2.27.1
     tabulate==0.8.9
 \end{verbatim}
-For the database management it was chosen to use PostgreSQL, which is a relational database management system.\\
+For the database management it was chosen to use PostgreSQL, as long with BDeaver, which is a SQL client software application and a database administration tool.\\
 The project was developed using the GIT version control system, integrated with the hosting system GitHub. These two tools allow to store, modify and share the project's code, as well as to keep a records
 of the activities and modifications done.\\
 The data retrieving was carried out thanks to the Microsoft Graph API, which is a REST API that allows to retrieve data from Microsoft Azure.\\
-Finally, the report creation was done using Power Bi, a Microsoft tool that allows to create reports in a simple and intuitive way.\\
+Finally, the report creation was done using Power Bi, a Microsoft tool that allows to create reports in a simple and intuitive way.
 
+\newpage
+\subsection{Standards}
+The whole Python coding part of the project was written following the \href{https://peps.python.org/pep-0008/}{PEP8} Style Guide for Python Code.
+This guide gives coding conventions for the Python code comprising the standard library in the main Python distribution.\\
+The application was developed from scratch, so I had to organize the files in order to maintain a precise schema. In particular mine was a command-line application composed by a main file, called \emph{console.py}
+and several other internal packages. Following the \href{https://realpython.com/python-application-layouts/}{standard layout}, I divided all my files into subfolders, each one containing packages divided with
+respect to their use and their functionality.\\
+Throughout the developing of my project, I made an extensive use of the Docker technology, which allowed me to create a containerized environment, isolated from the rest of the system,
+in which the software was developed, tested and run.
 
+\subsection{Training}
+During my internship experience I was able to learn several new technologies, I indeed spent the first week of my internship learning everything I would have needed for the developing of the project.\\
+First I had to learn Python programming language, to which I was totally new. This task was carried out following different tutorials and thanks to the constant support of company tutor, who assisted me in
+my training. The learning of this language was not very difficult, since, thanks to the course I followed, I already had a strong coding background.\\
+Then I start to discover the API world, particularly I had to learn how to make REST HTTP request to an endpoint in Python. Fortunately, I had already studied the basics of the HTTP protocol and the REST architecture
+during the course of \emph{Introduction to databases}, so I only had to adapt my previous knowledge to the Python language.\\
+Finally yet importantly, I learned, how to manage my progresses using the version control system GIT. It was the first time I used it in a working environment, but thanks to the course of \emph{Object oriented programming},
+I already had experience with the SVN version control system.
 
+\newpage
+\subsection{Console menu}
+The main file and the only one which was effectively run, is the \emph{console.py} file. This file is composed by a main menu, which allows to choose the desired command.\\
+The menu allows the user to choose which command to run or to open a help menu, which provide the user with information about the available commands and their usage.\\
 
 \end{document}
