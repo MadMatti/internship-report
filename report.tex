@@ -13,6 +13,8 @@
 }
 \usepackage[none]{hyphenat}
 \usepackage{pythonhighlight}
+\usepackage{graphicx}
+\graphicspath{{./images/}}
 
 
 \title{\huge Internship Report}
@@ -122,7 +124,7 @@ in which the software was developed, tested and run.
 \subsection{Training}
 During my internship experience I was able to learn several new technologies, I indeed spent the first week of my internship learning everything I would have needed for the developing of the project.\\
 First I had to learn Python programming language, to which I was totally new. This task was carried out following different tutorials and thanks to the constant support of company tutor, who assisted me in
-my training. The learning of this language was not very difficult, since, thanks to the course I followed, I already had a strong coding background.\\
+my training. The learning of this language was not very difficult, since, thanks to the courses I followed, I already had a strong coding background.\\
 Then I start to discover the API world, particularly I had to learn how to make REST HTTP request to an endpoint in Python. Fortunately, I had already studied the basics of the HTTP protocol and the REST architecture
 during the course of \emph{Introduction to databases}, so I only had to adapt my previous knowledge to the Python language.\\
 Finally yet importantly, I learned, how to manage my progresses using the version control system GIT. It was the first time I used it in a working environment, but thanks to the course of \emph{Object oriented programming},
@@ -131,6 +133,30 @@ I already had experience with the SVN version control system.
 \newpage
 \subsection{Console menu}
 The main file and the only one which was effectively run, is the \emph{console.py} file. This file is composed by a main menu, which allows to choose the desired command.\\
-The menu allows the user to choose which command to run or to open a help menu, which provide the user with information about the available commands and their usage.\\
+The menu allows the user to choose which command to run or to open a help menu, which provide the user with information about the available commands and their usage. The selected command has to be passed as a
+parameter when the script is run, some commands may accept optional parameters as indicated in the help menu. If no command is specified, the default action is to open the help menu.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth, height=7cm]{help-menu.png}
+    \caption{help menu}
+\end{figure}\\
+Summing up, the main role of the console is to import all the required packages and execute the commands, through all the function contained in the other files.
+
+\subsection{Configuration}
+The parameters needed in the project, such as database information, API URLs, JSON files and other data files, are stored in the \emph{config.ini} file. This allows the user to have a much more clear
+overview of the possibility to change the information based on the current needs.\\
+On the other hand this data are not directly contained in the Python code, so they need to be retrieved. The \emph{ConfigParser} package comes in our help, allowing as to retrieve the data from the config file
+and return them in any Python function.
+\begin{python}
+    def get_url():
+        parser = ConfigParser()
+        parser.read("config.ini")
+        url = parser.get('ping', 'url')
+        return url
+\end{python}
+The above code is an example of how the configuration function works. In the example, the parameter \emph{url} is retrieved from the section \emph{ping} of the \emph{config.ini} file.
+
+
+\subsection{Database Connection}
 
 \end{document}
