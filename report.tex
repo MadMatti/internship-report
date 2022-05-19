@@ -86,7 +86,7 @@ become a Microsoft partner.\\
 My role in the department was to create a software able to retrieve data about employees, company devices and their usage, and to create reports that would be useful for the company.
 
 \newpage
-\section{Project}
+\section{Project Introduction}
 The project can be summarized in 4 main parts:
 \begin{itemize}
     \item Data retrieval from Microsoft Azure, through the use of Microsoft Graph APIs.
@@ -131,6 +131,7 @@ Finally yet importantly, I learned, how to manage my progresses using the versio
 I already had experience with the SVN version control system.
 
 \newpage
+\section{Project}
 \subsection{Console menu}
 The main file and the only one which was effectively run, is the \emph{console.py} file. This file is composed by a main menu, which allows to choose the desired command.\\
 The menu allows the user to choose which command to run or to open a help menu, which provide the user with information about the available commands and their usage. The selected command has to be passed as a
@@ -156,7 +157,42 @@ and return them in any Python function.
 \end{python}
 The above code is an example of how the configuration function works. In the example, the parameter \emph{url} is retrieved from the section \emph{ping} of the \emph{config.ini} file.
 
-
 \subsection{Database Connection}
+The first important step of the project was to set up a database. As said in the previous sections, the database was a PostgreSQL database, hosted in the Azure cloud.\\
+One the database was up and running, the next step was to create a connection between the Python application and the database, in order to be able to store, modify and delete data directly from the application.\\
+It twas chosen to use the \emph{Psycopg2} library, which is the most popular PostgreSQL database adapter for the Python programming language. This package allows to open a connection, query the data, 
+commit the changes and finally close the connection.
+\begin{python}
+    # parameters are host, database, user, password
+    def connect(params):
+        conn = None
+        # connect to the PostgreSQL server
+        conn = psycopg2.connect(**params)
+        # create a cursor
+        cur = conn.cursor()
+        # execute a statement
+        cur.execute('SELECT version()')
+        # display the PostgreSQL database server version
+        db_version = cur.fetchone()
+        print(db_version)
+        # close the communication with the PostgreSQL
+        cur.close()
+        return conn
+\end{python}
+The above code describe the \emph{connect} function, that is one of the most fundamental functions of the project. It opens a connection with the database, then the \emph{cursor} object allows to execute a query
+and retrieve the result. Finally, the cursor is closed and the \emph{conn} object is returned, in order to be used wherever is needed a database connection.
+
+\subsection{Migrations}
+During the development of the project the database was constantly modified: some tables was added, removed or altered. In order to keep track of all the changes, it was created a table named \emph{migrations},
+used to store the changes made to the database.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=8cm, height=4cm]{table-migrations.png}
+    \caption{table migrations}
+\end{figure}\\
+
+
+
+
 
 \end{document}
