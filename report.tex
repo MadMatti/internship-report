@@ -34,6 +34,8 @@
 
 \newpage
 \section{Summary}
+At the beginning of the academic year I chose to substitute my $3^{rd}$ free ECTS exam with an internship. For my study programme was slated a 10 credits internship. Since I decided to work part-time
+for the whole experience, it last 3 months.\\
 During my internship experience with Ubroker, I have developed my own data mining project from scratch, developing the necessaries skills and knowledge.\\
 The main objective of the project was to retrieve data about employees, company devices and their usage, and to create reports that would be useful for the company.\\
 The project was developed in Python, language that I learned thanks to the constant support of my colleagues.\\
@@ -115,7 +117,7 @@ Finally, the report creation was done using Power Bi, a Microsoft tool that allo
 \subsection{Standards}
 The whole Python coding part of the project was written following the \href{https://peps.python.org/pep-0008/}{PEP8} Style Guide for Python Code.
 This guide gives coding conventions for the Python code comprising the standard library in the main Python distribution.\\
-The application was developed from scratch, so I had to organize the files in order to maintain a precise schema. In particular mine was a command-line application composed by a main file, called \emph{console.py}
+The application was developed from scratch, so I had to organize the files in order to maintain a precise schema. In particular mine was a command-line application composed by a main file, called \texttt{console.py}
 and several other internal packages. Following the \href{https://realpython.com/python-application-layouts/}{standard layout}, I divided all my files into subfolders, each one containing packages divided with
 respect to their use and their functionality.\\
 Throughout the developing of my project, I made an extensive use of the Docker technology, which allowed me to create a containerized environment, isolated from the rest of the system,
@@ -133,7 +135,7 @@ I already had experience with the SVN version control system.
 \newpage
 \section{Project}
 \subsection{Console menu}
-The main file and the only one which was effectively run, is the \emph{console.py} file. This file is composed by a main menu, which allows to choose the desired command.\\
+The main file and the only one which was effectively run, is the \texttt{console.py} file. This file is composed by a main menu, which allows to choose the desired command.\\
 The menu allows the user to choose which command to run or to open a help menu, which provide the user with information about the available commands and their usage. The selected command has to be passed as a
 parameter when the script is run, some commands may accept optional parameters as indicated in the help menu. If no command is specified, the default action is to open the help menu.
 \begin{figure}[h]
@@ -144,9 +146,9 @@ parameter when the script is run, some commands may accept optional parameters a
 Summing up, the main role of the console is to import all the required packages and execute the commands, through all the function contained in the other files.
 
 \subsection{Configuration}
-The parameters needed in the project, such as database information, API URLs, JSON files and other data files, are stored in the \emph{config.ini} file. This allows the user to have a much more clear
+The parameters needed in the project, such as database information, API URLs, JSON files and other data files, are stored in the \texttt{config.ini} file. This allows the user to have a much more clear
 overview of the possibility to change the information based on the current needs.\\
-On the other hand this data are not directly contained in the Python code, so they need to be retrieved. The \emph{ConfigParser} package comes in our help, allowing as to retrieve the data from the config file
+On the other hand this data are not directly contained in the Python code, so they need to be retrieved. The \texttt{ConfigParser} package comes in our help, allowing as to retrieve the data from the config file
 and return them in any Python function.
 \begin{python}
     def get_url():
@@ -155,12 +157,12 @@ and return them in any Python function.
         url = parser.get('ping', 'url')
         return url
 \end{python}
-The above code is an example of how the configuration function works. In the example, the parameter \emph{url} is retrieved from the section \emph{ping} of the \emph{config.ini} file.
+The above code is an example of how the configuration function works. In the example, the parameter \texttt{url} is retrieved from the section \texttt{ping} of the \texttt{config.ini} file.
 
 \subsection{Database Connection}
 The first important step of the project was to set up a database. As said in the previous sections, the database was a PostgreSQL database, hosted in the Azure cloud.\\
 One the database was up and running, the next step was to create a connection between the Python application and the database, in order to be able to store, modify and delete data directly from the application.\\
-It twas chosen to use the \emph{Psycopg2} library, which is the most popular PostgreSQL database adapter for the Python programming language. This package allows to open a connection, query the data, 
+It twas chosen to use the \texttt{Psycopg2} library, which is the most popular PostgreSQL database adapter for the Python programming language. This package allows to open a connection, query the data, 
 commit the changes and finally close the connection.
 \begin{python}
     # parameters are host, database, user, password
@@ -179,19 +181,60 @@ commit the changes and finally close the connection.
         cur.close()
         return conn
 \end{python}
-The above code describe the \emph{connect} function, that is one of the most fundamental functions of the project. It opens a connection with the database, then the \emph{cursor} object allows to execute a query
-and retrieve the result. Finally, the cursor is closed and the \emph{conn} object is returned, in order to be used wherever is needed a database connection.
+The above code describe the \texttt{connect} function, that is one of the most fundamental functions of the project. It opens a connection with the database, then the \texttt{cursor} object allows to execute a query
+and retrieve the result. Finally, the cursor is closed and the \texttt{conn} object is returned, in order to be used wherever is needed a database connection.
 
 \subsection{Migrations}
-During the development of the project the database was constantly modified: some tables was added, removed or altered. In order to keep track of all the changes, it was created a table named \emph{migrations},
-used to store the changes made to the database.
+During the development of the project the database was constantly modified: some tables was added, removed or altered. In order to keep track of all the changes, it was created a table named \texttt{migrations},
+used to store the changes made to the database. The table is composed of two columns: the migration version and exact date and time of the entry insertion. 
 \begin{figure}[h]
     \centering
     \includegraphics[width=8cm, height=4cm]{table-migrations.png}
     \caption{table migrations}
 \end{figure}\\
+Each time it was needed to modify the database, a SQL file was written and named with current date and time. Then it was checked if the instruction written into the file were ready to be applied to the 
+database.\\
+First it was checked if the name of the migration file respects the naming constraints, i.e., thanks to the \texttt{datetime} library, it was checked if the name was a valid date and time format.
+The next step was to find out if the file was not already present in the database and if it was the most recent. If both conditions were verified, then the file was inserted in the \emph{ready to be executed}
+list, meaning that the migrations was ready to be applied to the database.\\
+The main menu offers two migrations command:
+\begin{itemize}
+    \item \texttt{db-mig-status}: allows the user to have an overview of the migrations' status. It lists the migrations ready to be executed, the ones available only in the file system and those available
+            only in the database. The last two are indicated as errors, since the file systems and the database migrations table must be aligned.
+    \newpage
+    \item \texttt{db-mig-execute}: execute all the migrations labelled as \emph{ready to be executed}. If the execution is successful the changes are committed to the database and a new entry is inserted in the
+            migrations table. If the execution is not successful, the changes are rolled back and the user is informed.
+\end{itemize}
 
+\subsection{Azure Application}
+\subsubsection{Azure Environment}
+Azure is a cloud computing based platform for hosting applications and website, created and operated by Microsoft. After registering an application in the Azure portal, one can access and use all the services
+provided by Microsoft Graph.
+\subsubsection{Application Registration}
+The project objective is to retrieve and analyze the data from Microsoft Graph. In order to be able to use this service, I had to register my application in the Azure portal.\\
+Following the \href{https://docs.microsoft.com/en-us/graph/auth-v2-service#authentication-and-authorization-steps}{official documentation} and thanks to my company tutor support, the application was correctly
+registered and the required permission was given. After the registration procedure, the application details were generated by the portal: client ID, secret, authority and scope. This data was saved in the 
+\texttt{config.ini} file since they would be used soon to access the Microsoft Graph API.
 
+\subsection{Microsoft Graph}
+\subsubsection{Authentication and Connection}
+Once the application was registered in Azure platform, in order to access the Microsoft Graph API, I had to connect my Python code to Microsoft Graph. This was done following the 
+\href{https://github.com/Azure-Samples/ms-identity-python-daemon/tree/master/1-Call-MsGraph-WithSecret}{official guide} and using the \texttt{msal} package.\\
+Once the connection was established, an authentication token was generated, which is later used to access the Microsoft Graph API.\\
+In the following page can be found the code implementation.
+\newpage
+\begin{python}
+  def connect(authority, client_id, scope, secret):
+      app = msal.ConfidentialClientApplication(
+            client_id, client_credential=secret, 
+            authority=authority)
+      result = app.acquire_token_silent(scope, account=None)
+      if not result:
+          result = app.acquire_token_for_client(scopes=scope)
+      return result['access_token']
+\end{python}
+The above code snippet explains how the connection is established. The needed parameters are the client authority, ID, scope and secret. Then is checked if the token is still valid. If it is not, it is renewed
+and at the end the token is returned and ready to be used to perform the requests to the Microsoft Graph API.
 
 
 
