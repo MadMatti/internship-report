@@ -5,7 +5,7 @@
 \usepackage[hidelinks]{hyperref}
 \hypersetup{
     colorlinks=true,
-    linkcolor=black,
+    linkcolor=gray,
     filecolor=magenta,
     urlcolor=blue,
     pdftitle={Internship Report},
@@ -13,6 +13,7 @@
 }
 \usepackage[none]{hyphenat}
 \usepackage{pythonhighlight}
+\usepackage{fancyvrb}
 \usepackage{graphicx}
 \graphicspath{{./images/}}
 
@@ -185,6 +186,7 @@ The above code describe the \texttt{connect} function, that is one of the most f
 and retrieve the result. Finally, the cursor is closed and the \texttt{conn} object is returned, in order to be used wherever is needed a database connection.
 
 \subsection{Migrations}
+\label{subsec:migrations}
 During the development of the project the database was constantly modified: some tables was added, removed or altered. In order to keep track of all the changes, it was created a table named \texttt{migrations},
 used to store the changes made to the database. The table is composed of two columns: the migration version and exact date and time of the entry insertion. 
 \begin{figure}[h]
@@ -236,7 +238,82 @@ In the following page can be found the code implementation.
 The above code snippet explains how the connection is established. The needed parameters are the client authority, ID, scope and secret. Then is checked if the token is still valid. If it is not, it is renewed
 and at the end the token is returned and ready to be used to perform the requests to the Microsoft Graph API.
 
-\subsection{Graph: Users}
+\subsubsection{Graph: Users}
+The first set of data which I worked with is the list of all the users registered with a company Microsoft account.
+
+\paragraph{Data Retrieval} ~\\
+The first step was to retrieve the list of users from the Microsoft Graph API. The task was performed, as explained before, with a GET request, through the \texttt{requests} library.\\
+An endpoint was needed and the one I used had the following url:  
+\begin{Verbatim}[fontsize=\small]
+https://graph.microsoft.com/v1.0/users?$top=999&$select=id,displayName
+\end{Verbatim}
+where the \texttt{\$select} parameter is used to retrieve only the fields needed.\\
+The request is done inserting in the header the authorization token, whose importance was explained before. Finally, if the request was successful, the list of users is returned.
+
+\paragraph{Response Validation} ~\\
+Once the response of the endpoint was available, it needs to be validate, i.e., it must be checked that all the required fields are present and in the correct format.\\
+The response of every API is a \texttt{json} text, so it is checked against a \texttt{json} file specifically writte for the used endpoint. This is performed using the \texttt{validate} module of the 
+\texttt{jsonschema} library.
+\newline\newline\newline
+The following snippet reports the \texttt{json} file written to check each object of response of the users endpoint:
+\begin{python}
+    {
+    "id": {"type": "string"},
+    "displayName": {"type": "string"},
+    "required" : ["id"]
+    }
+\end{python}
+It states that two fields are expected: \texttt{id} and \texttt{displayName} and both must be of string type, i.e., they must be a text. Moreover, the \texttt{required} instruction imposes that the \texttt{id} field
+must be present, othterwise the validation will fail, while the \texttt{displayname} may be absent.\\
+This \texttt{required} instruction was specified for the \texttt{id} since it will later be used a primary key in the database, so it cannot be a null value.
+
+\paragraph{Database Insertion} ~\\
+Finally, after the data was retrieved and velidate, they are ready to be inserted in the database.\\
+Through a migration (see section \hyperref[subsec:migrations]{4.4} for furhter information) the table \texttt{users} was created, with the following characteristics:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=10cm, height=2cm]{table-users.png}
+    \caption{table migrations}
+\end{figure}\\
+
+One the users list is available, it must be inserted in the database. This is done though a cycle and for each entry of the list there are two possiblities:
+\begin{itemize}
+    \item \texttt{insert}. This command insert a user in the table if and only if the user is not already present in the table.
+    \item \texttt{update}. If the user is already present in the table, this command updates the user's information.
+\end{itemize}
+FInally, at the end of the cycle, the changes to the database are committed and the connection is closed.
+
+\newpage
+\subsubsection{Graph Devices}
+The second big set of data used in the project was the list of the company devices given to the employees.
+
+\paragraph{Data Retrieval} ~\\
+Such as for the users, first step was to retrieve the list of devices from the Microsoft Graph API. The task was performed, with a GET request, through the \texttt{requests} library.\\
+An endpoint was needed and the one I used had the following url:  
+\begin{Verbatim}[fontsize=\small]
+https://graph.microsoft.com/v1.0/devices?$top=999&$select=deviceID,
+id,displayName,registrationDateTime,approximateLastSignInDateTime
+\end{Verbatim}
+where again the \texttt{\$select} parameter is used to retrieve only the fields needed.\\
+
+\paragraph{Data Validation} ~\\
+In the same way as it was explained before, the response of the endpoint was validated, i.e., checked against a \texttt{json} file specifically written for the used endpoint.\\
+The following piece of code shows an extract of the \texttt{json} file:
+\begin{python}
+{
+...
+"registrationDateTime": {"type": "DateTimeOffset"},
+"approximateLastSignInDateTime": {"type": "DateTimeOffset"},
+"required" : ["deviceId", "id", "displayName"]
+}
+\end{python}
+The deviceID, id and displayname fileds are omitted since they are \texttt{string} and there are no differences with respectto what explained for the user \texttt{json} file.
+What is new are the \texttt{registrationDateTime} and \\ \texttt{approximateLastSignInDateTime} fields, which are dates and are expressed as \texttt{DateTimeOffset} format.
+
+\paragraph{Active Devices} ~\\
+The problem of the devices list retrieved from Microsoft Graph is that it contains not onlt the active devices, but also the devices that are not active anymore, such as old notebooks or pohones.
+In order to overcome this problem, the devices list was filtered to obtain only the devices effectively active in a time period, determined in the \texttt{config.ini} file.\\
+
 
 
 \end{document}
