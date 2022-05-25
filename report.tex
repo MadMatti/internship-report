@@ -5,7 +5,7 @@
 \usepackage[hidelinks]{hyperref}
 \hypersetup{
     colorlinks=true,
-    linkcolor=gray,
+    linkcolor=black,
     filecolor=magenta,
     urlcolor=blue,
     pdftitle={Internship Report},
@@ -18,7 +18,7 @@
 \graphicspath{{./images/}}
 
 
-\title{\huge Internship Report}
+\title{\huge \textbf{Internship Report}}
 \author{Mattia Evangelisti \\ s268637}
 \date{June 2022}
 
@@ -27,6 +27,10 @@
 
 \begin{titlepage}
     \maketitle
+    \begin{center}
+        An internship report presented for the degree of\\
+        Computer Engineering    
+    \end{center}
 \end{titlepage}
 
 \tableofcontents
@@ -119,7 +123,7 @@ Finally, the report creation was done using Power Bi, a Microsoft tool that allo
 The whole Python coding part of the project was written following the \href{https://peps.python.org/pep-0008/}{PEP8} Style Guide for Python Code.
 This guide gives coding conventions for the Python code comprising the standard library in the main Python distribution.\\
 The application was developed from scratch, so I had to organize the files in order to maintain a precise schema. In particular mine was a command-line application composed by a main file, called \texttt{console.py}
-and several other internal packages. Following the \href{https://realpython.com/python-application-layouts/}{standard layout}, I divided all my files into subfolders, each one containing packages divided with
+and several other internal packages. Following the \href{https://docs.python-guide.org/writing/structure/}{standard layout}, I divided all my files into subfolders, each one containing packages divided with
 respect to their use and their functionality.\\
 Throughout the developing of my project, I made an extensive use of the Docker technology, which allowed me to create a containerized environment, isolated from the rest of the system,
 in which the software was developed, tested and run.
@@ -188,7 +192,11 @@ and retrieve the result. Finally, the cursor is closed and the \texttt{conn} obj
 \subsection{Migrations}
 \label{subsec:migrations}
 During the development of the project the database was constantly modified: some tables was added, removed or altered. In order to keep track of all the changes, it was created a table named \texttt{migrations},
-used to store the changes made to the database. The table is composed of two columns: the migration version and exact date and time of the entry insertion. 
+used to store the changes made to the database. The table is composed of two columns: the migration version and exact date and time of the entry insertion.\\
+The concept of migrations was widely known in the company IT department, where the team makes a intense use of the \href{https://www.doctrine-project.org/projects/doctrine-migrations/en/3.3/index.html}{migration doctrine}, 
+applied to PHP. In order to aligne mt project with the company standards, it was chosen to use the concept of migrations. \\
+There exist Python libraries useful to manage all the migrations, but since this is a small project, instead of learn the use of a complex library, it was chosen to personally develop the functions needed for the management 
+of the database migrations.
 \begin{figure}[h]
     \centering
     \includegraphics[width=8cm, height=4cm]{table-migrations.png}
@@ -198,12 +206,12 @@ Each time it was needed to modify the database, a SQL file was written and named
 database.\\
 First it was checked if the name of the migration file respects the naming constraints, i.e., thanks to the \texttt{datetime} library, it was checked if the name was a valid date and time format.
 The next step was to find out if the file was not already present in the database and if it was the most recent. If both conditions were verified, then the file was inserted in the \emph{ready to be executed}
-list, meaning that the migrations was ready to be applied to the database.\\
+list, meaning that the migrations was ready to be applied to the database.
+\newline\newline\newline\newline
 The main menu offers two migrations command:
 \begin{itemize}
     \item \texttt{db-mig-status}: allows the user to have an overview of the migrations' status. It lists the migrations ready to be executed, the ones available only in the file system and those available
             only in the database. The last two are indicated as errors, since the file systems and the database migrations table must be aligned.
-    \newpage
     \item \texttt{db-mig-execute}: execute all the migrations labelled as \emph{ready to be executed}. If the execution is successful the changes are committed to the database and a new entry is inserted in the
             migrations table. If the execution is not successful, the changes are rolled back and the user is informed.
 \end{itemize}
@@ -219,12 +227,11 @@ registered and the required permission was given. After the registration procedu
 \texttt{config.ini} file since they would be used soon to access the Microsoft Graph API.
 
 \subsection{Microsoft Graph}
-\subsubsection{Authentication and Connection}
-Once the application was registered in Azure platform, in order to access the Microsoft Graph API, I had to connect my Python code to Microsoft Graph. This was done following the 
-\href{https://github.com/Azure-Samples/ms-identity-python-daemon/tree/master/1-Call-MsGraph-WithSecret}{official guide} and using the \texttt{msal} package.\\
-Once the connection was established, an authentication token was generated, which is later used to access the Microsoft Graph API.\\
-In the following page can be found the code implementation.
-\newpage
+\subsubsection{Authorization and Connection}
+Once the application was registered in Azure platform, in order to access the Microsoft Graph API, I had to connect my Python code to Microsoft Graph API. \\
+Microsoft Azure makes use of \href{https://oauth.net/2/}{OAuth 2.0}, which is the industry-standard protocol for authorization, based on the concept of access tokens.\\
+Authorization and connection was implemented following the \href{https://github.com/Azure-Samples/ms-identity-python-daemon/tree/master/1-Call-MsGraph-WithSecret}{official guide} and using the \texttt{msal} package.\\
+Once the connection was established, an authentication token was generated, which is later used to access the Microsoft Graph API.
 \begin{python}
   def connect(authority, client_id, scope, secret):
       app = msal.ConfidentialClientApplication(
@@ -254,7 +261,6 @@ The request is done inserting in the header the authorization token, whose impor
 Once the response of the endpoint was available, it needs to be validate, i.e., it must be checked that all the required fields are present and in the correct format.\\
 The response of every API is a \texttt{json} text, so it is checked against a \texttt{json} file specifically writte for the used endpoint. This is performed using the \texttt{validate} module of the 
 \texttt{jsonschema} library.
-\newline\newline\newline
 The following snippet reports the \texttt{json} file written to check each object of response of the users endpoint:
 \begin{python}
     {
@@ -268,12 +274,12 @@ must be present, othterwise the validation will fail, while the \texttt{displayn
 This \texttt{required} instruction was specified for the \texttt{id} since it will later be used a primary key in the database, so it cannot be a null value.
 
 \paragraph{Database Insertion} ~\\
-Finally, after the data was retrieved and velidate, they are ready to be inserted in the database.\\
+Finally, after the data was retrieved and validated, they are ready to be inserted in the database.\\
 Through a migration (see section \hyperref[subsec:migrations]{4.4} for furhter information) the table \texttt{users} was created, with the following characteristics:
 \begin{figure}[h]
     \centering
     \includegraphics[width=10cm, height=2cm]{table-users.png}
-    \caption{table migrations}
+    \caption{table users}
 \end{figure}\\
 
 One the users list is available, it must be inserted in the database. This is done though a cycle and for each entry of the list there are two possiblities:
@@ -294,7 +300,7 @@ An endpoint was needed and the one I used had the following url:
 https://graph.microsoft.com/v1.0/devices?$top=999&$select=deviceID,
 id,displayName,registrationDateTime,approximateLastSignInDateTime
 \end{Verbatim}
-where again the \texttt{\$select} parameter is used to retrieve only the fields needed.\\
+where again the \texttt{\$select} parameter is used to retrieve only the fields needed.
 
 \paragraph{Data Validation} ~\\
 In the same way as it was explained before, the response of the endpoint was validated, i.e., checked against a \texttt{json} file specifically written for the used endpoint.\\
@@ -307,12 +313,103 @@ The following piece of code shows an extract of the \texttt{json} file:
 "required" : ["deviceId", "id", "displayName"]
 }
 \end{python}
-The deviceID, id and displayname fileds are omitted since they are \texttt{string} and there are no differences with respectto what explained for the user \texttt{json} file.
+The deviceID, id and displayname fileds are omitted since they are \texttt{string} and there are no differences with respect to what explained for the user \texttt{json} file.
 What is new are the \texttt{registrationDateTime} and \\ \texttt{approximateLastSignInDateTime} fields, which are dates and are expressed as \texttt{DateTimeOffset} format.
 
 \paragraph{Active Devices} ~\\
 The problem of the devices list retrieved from Microsoft Graph is that it contains not onlt the active devices, but also the devices that are not active anymore, such as old notebooks or pohones.
 In order to overcome this problem, the devices list was filtered to obtain only the devices effectively active in a time period, determined in the \texttt{config.ini} file.\\
+After the validation the two date fields were converted in \texttt{date object}, foundamental for working with dates in Python. Then, the devices list was filtered to obtain only the devices that are active 
+in the deired period.\\
+The following code explains how the list of the active devices is obtained:
+\begin{python}
+def list_active_devices(devices, active_period):
+   today = datetime.now()
+   start_date = (
+      today -
+      timedelta(
+         days=active_period,
+         hours=today.hour,
+         minutes=today.minute,
+         seconds=today.second)).strftime("%Y-%m-%dT%H:%M:%SZ")
+   active_devices = []
+   for device in devices:
+       last_login = device['approximateLastSignInDateTime']
+       if last_login is not None and last_login >= start_date:
+           active_devices.append(device)
+   return active_devices
+\end{python}
+First the start date is found, subtracting the number of days specified in the period from the current date, thanks to the \texttt{timedelta} function. The obtained date is converted in a date object using the
+\texttt{strftime} function.\\
+Then, the list of devices is cycled and only the devices with a last login more recent than the start date are added to the list of active devices, that is in the end returned.\\
+At the end of the function, we will have a list containing only the devices with the last login done in a defined time period.
+
+\paragraph{Database insertion and deletion} ~\\
+Finally, the list of active devices is inserted in the database. The process is similar to the one for the users.\\
+The table \texttt{devices} was created, with the following characteristics:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=12cm, height=3cm]{table-devices.png}
+    \caption{table devices}
+\end{figure}\\
+The main difference with respect to the users part is that the devices stores in the database must be deletedonce they exit the active period.
+\newline\newline
+This simple piece of code solve the problem:
+\begin{python}
+    for device in devices:
+        ...
+        cur.execute(sql_check, (deviceID,))
+        if cur.fetchone()[0] is False:
+            insert(cur, deviceID, id, name, date, last_login)
+        else:
+            update(cur, deviceID, last_login)
+    delete_devices(cur, active_period)
+    ...
+\end{python}
+It checks, for each device in the list, if it is already present in the database. If it is not present, it is inserted, otherwise the device information are updated. At the end of the cycle, 
+the devices that are not active anymore are deleted.
+
+\subsubsection{Graph: Logs}
+The most important and complex set of data was the list of all the logs done by every employee.
+
+\paragraph{Data Retrieval} ~\\
+The most complicated task of this part of the project was to retrieve the list of all logs from Microsoft Azure, since Graph allows to retrieve at most 1000 entry at single HTTP request. To overcome this problem
+successive requestes was made. The paging system of Azure was managed included the authentication token for the next request in the header of the previous API response, when the next token field was missing it means
+that it was the last page.\\
+Moreover it was asked to retrieve only the logs done in a specified period, whose values was specified in the \texttt{config.ini} file.
+\begin{python}
+    ...
+    while next_link is not None:
+        print("Retrieving information from Azure")
+        logs = requests.get(next_link, headers=headers).json()
+        insert_logs(conn, logs['value'], file_schema)
+        if "@odata.nextLink" in logs:
+            next_link = logs['@odata.nextLink']
+        else:
+            next_link = None
+    ...
+\end{python}
+The above code reports how the paging issue was solved: each time a page is returned, the \texttt{nextLink} is saved and used as URL for the next request.
+
+\paragraph{Data Validation} ~\\
+In the same way as explained in the preceding sections, the response of the endpoint was validated, i.e., checked against a \texttt{json} file specifically written for the used endpoint.\\
+After the validation, all the date fiels were converted in \texttt{date object}, in order to be ready to be used and inserted in the database.
+
+\paragraph{Database insertion} ~\\
+FIrst the table logs was created, with the following structure:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=13cm, height=5.5cm]{table-logs.png}
+    \caption{table logs}
+\end{figure}\\
+Since the logs were retrieved up to a defined number of days and the script may be run everyday, only the new logs had to be inserted in the database. To achive the desired result, for each entry of the logs
+list was checked if it was already present in the database. If the answer was negative then the log was inserted, otherwise it was ignored.
+
+\subsection{Data Analysis}
+
+
+
+
 
 
 
