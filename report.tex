@@ -14,6 +14,8 @@
 \usepackage[none]{hyphenat}
 \usepackage{pythonhighlight}
 \usepackage{fancyvrb}
+\usepackage{verbatim}
+\usepackage{varwidth}
 \usepackage{graphicx}
 \graphicspath{{./images/}}
 
@@ -402,15 +404,41 @@ FIrst the table logs was created, with the following structure:
     \includegraphics[width=13cm, height=5.5cm]{table-logs.png}
     \caption{table logs}
 \end{figure}\\
-Since the logs were retrieved up to a defined number of days and the script may be run everyday, only the new logs had to be inserted in the database. To achive the desired result, for each entry of the logs
-list was checked if it was already present in the database. If the answer was negative then the log was inserted, otherwise it was ignored.
+Since the logs were retrieved up to a defined number of days and the script may be run everyday, only the new logs had to be inserted in the database. To achieve this result, each entry of the retrieved list 
+was checked against the rows of the db. If the record is not found in the database it is inserted, otherwise it is ignored.
+
+\subsection{Docker}
+After all the code development described in the previous sections, the script was ready and able to retrieve, validate and insert the data in the database.\\
+At this point the only problem was that the project was developed on a specific Windows machine, so every command needed to be executed from that machine in order to be able to run properly.\\
+This was a problem since the script needed to be run from any machines, including servers anche Unix environments. To overcome this issue, the whole project was packaged in a Docker container, which
+create an environment that could be run in every device.\\
+First I had to learn how to use the Docker technology, then I installed Docker Desktop, which is a graphic interface for create and managing docker container. Once I was ready, I created a docker container for
+my project and I wrote the needed \texttt{Dockerfile}. \\
+The \texttt{Dockerfile} is the instruction file needed to correctly setup the Docker environment and inside the following parameters was specified:
+\begin{itemize}
+    \item \textbf{Python}: it was specified which version of Python to use and the standard path of Python in a generic machine.
+    \item \textbf{Packages}: the needed packaged for the project were listed in ordere to be installed inside the Docker container.
+    \item \textbf{Entrypoint}: using bash instructions, there were specified which commands to execute when the container is started.
+\end{itemize}
+Once the container was ready, it was possible to run the wanted script from every device.\\
+In our case, the commads specified in the \texttt{Entrypoint} were the ones to retrieve, validate and insert aal the needed data in the database. At the end only one command was run:
+\begin{center}
+\scriptsize
+\begin{BVerbatim}
+docker run --rm -it --name python-dev-container -p 1010:1010 python-dev-image  
+\end{BVerbatim}
+\end{center}
+as a conseguence of this command the database was populated with the users, devices and logs data.
+
+
+
+
+
+
+
+
 
 \subsection{Data Analysis}
-
-
-
-
-
-
-
+\subsection{Report Creation}
+\section{Conclusion and Considerations}
 \end{document}
