@@ -428,17 +428,33 @@ In our case, the commads specified in the \texttt{Entrypoint} were the ones to r
 docker run --rm -it --name python-dev-container -p 1010:1010 python-dev-image  
 \end{BVerbatim}
 \end{center}
-as a conseguence of this command the database was populated with the users, devices and logs data.
-
-
-
-
-
-
-
-
+as a conseguence of this command the database was populated with the users, devices and logs data.\\
+In the end after the Docker technology was applied to the project, it could be run from any machine and with a single command, all the operations for retrieve the data and populate the database would be executed. 
 
 \subsection{Data Analysis}
+Data analysis and the creation of statistics about the available data was the final objective of the project.\\
+There were performed five main analysis:
+\begin{enumerate}
+    \item Users who have never done a login with their company account
+    \item Company devices which have never received a login
+    \item Company devices which are shared with more than one employee
+    \item Users who hav done login only in unregistered devices (i.e., devices that are not in the database)
+    \item Consecutive logs done by the same user in a short amount of time in two different and far locations 
+\end{enumerate}
+
+\subsubsection{Analysis creation}
+All the statistics listed before were realized twice: first they were created using only standard SQL without any extention, i.e., each statistic was a single query whose complexity varied from one to the other.\\
+In a second moment everything done in SQL was realized again using Python, i.e., integrating Python coding with more simple queries to the database.\\
+In this section there will not be any code, but all the SQL and Python files can be find in the \href{https:\\github.com}{project repository}.
+
+\subsubsection{Unlogged users}
+
+
+
+
+
+
+
 \subsection{Report Creation}
 \section{Conclusion and Considerations}
 \end{document}
