@@ -441,13 +441,90 @@ There were performed five main analysis:
     \item Users who hav done login only in unregistered devices (i.e., devices that are not in the database)
     \item Consecutive logs done by the same user in a short amount of time in two different and far locations 
 \end{enumerate}
+\newpage
+Each of the analysis described have a corrispondent command in the console menu. Those commands can be execute with an additional optional parameter which specifies the time duration in which the analysis is performed.
+If the parameter is not inserted the default interval is ninety days from the current date. 
 
 \subsubsection{Analysis creation}
 All the statistics listed before were realized twice: first they were created using only standard SQL without any extention, i.e., each statistic was a single query whose complexity varied from one to the other.\\
+SQL is an achronim for \texttt{Structured Query Language}, which is a standardised language that is used to interrogate relational databases.\\
 In a second moment everything done in SQL was realized again using Python, i.e., integrating Python coding with more simple queries to the database.\\
 In this section there will not be any code, but all the SQL and Python files can be find in the \href{https:\\github.com}{project repository}.
 
 \subsubsection{Unlogged users}
+The first analysis create was the one dedicated to find all the employees who have never done a login with their company account.\\
+In order to select only the users who have never logged in, it was needed to select the list of users present in the table \texttt{users} and not present in the table \texttt{logs}.\\
+Initially it was though to use the \texttt{NOT EXISTS} or the \texttt{EXCEPT} operator, that as the names suggest select the entry available in a table and not in the other one.
+However, it was found out that these two methods are not very efficient, so it was finally choses to adopt the \texttt{LEFT JOIN} operator, which is a kind of join operator which selects the rows of the 
+first table that are not present in the second one. By adopting the join operator, the efficienty of the query incredibly increased.\\
+Since the query was a very simple one, the Python implementation was simply the code needed to run the query.\\
+At the end, after running the corrispondent command of this analysis, the \texttt{id} and \texttt{displayName} of the selected users were shown as result.
+
+\newpage
+\subsubsection{Unused devices}
+In a second moment it was necessary to create a second analysis, similar to the first one, but regarding the devices. It was indeed needed to find all the devices that have never received a login.\\
+The procedure was similar to the one adopted in the first analysis, so we needed to select only the devices available in the table \texttt{devices} and not in the table \texttt{logs}.\\
+Since the queory was similar to the previous one, it was directly done using the \texttt{LEFT JOIN} to select only the rows present in the first table and not in the second one.\\
+Once again the Python implementation was only the code needed to run the query.\\
+At the end, after running the corrispondent command, the \texttt{id} and \texttt{displayName} of the selected devices were shown as result.
+
+\subsubsection{Shared devices}
+The third analysis is the one that was created to find all the devices that are shared with more than one employee and all the login done on those devices.\\
+This was a more complex query, since more data manipulations were needed before the expected result coulb be selected.\\
+Itt was needed to select from the logs table only the logs done on devices which had received login from more than one different users.\\
+Firs it was created a subquery in order to select from the table \texttt{logs} the \texttt{id} of the devices on which have been done access from more than one user.\\ 
+Then the result of the subquery was joined with the table \texttt{logs} in order to select only the logs of the devices whose id was selected before. Finally the result was grouped using the \texttt{group by}
+statement, in order to have not repeated logs done from the same user on the same device. As last step the list of the selected logs was ordered, through the \texttt{order by} operator to have a more 
+readable result.\\  
+This analysis was more complext with respect to the previous one, but once the logic of the query was leared, everything could be easily written in SQL language.
+For this reason the Python implementation is, once again, the simple code needed to run a SQL query.\\
+At the end, the result of the main menu command shows the \texttt{id} and \texttt{displayName} of the shared devices and the \texttt{id} and \texttt{displayName} of the users who have done login on them.
+
+\subsubsection{Logs on unknown devices}
+This statistics was created to find all the users who have done login only on devices not registered in the company system.\\
+First it was needed a subquery to find all the entries from the table \texttt{logs} with the column \texttt{deviceId} equal to \texttt{NULL}, i.e., all the logs done on an unknown device.\\
+Then the table \texttt{users} was joined with the table \texttt{logs} in order to have information about both users and logs. From the result of this join operation, there were selected only the rows present
+in the result of the subquery previously written. By doing this we have obtained only the entries corresponding to the logs done on unknown devices.\\
+Finally, it was required to reuturn information about the users who have done those logs, so from the final result, only the columns \texttt{userID} and \texttt{userDisplayname} were selected.\\
+The result of the command corrispondent to this analysis are the \texttt{id} and \texttt{displayName} of the users who have done login on unknown devices.\\
+Once again the Python implementation is the simple code needed to run the corresponding SQL query.
+
+\subsubsection{Impossible logs}
+The last analysis was realized to find all the logs there were physycally impossible, i.e., the logs done in a short time interval and in two different and far location.
+For example two successive logs done from the same user in a time interval of two minutes and in two location 100 km apart. This example is clearly an impossible log, since it is not possible to travel 100 km
+in only two minutes.\\
+In the \texttt{logs} table, the position of a specific log is given by the latitude and longitude of the device on which the log was done.\\
+PostgreSQL offers an additional module called PostGIS, which is a module that allows to perform spatial queries on the database. This extention is complex and it is used when very precises measurements are
+needed.\\
+Since it was decided to use only standard SQL and a precise measurement was not needed for the purpose of the analysis, it was chosen to directly calculate the distances between the two points, using the
+\href{https://en.wikipedia.org/wiki/Haversine_formula}{Haversine formula}:
+\[
+    d = 2r\arcsin \left( \sqrt{ \sin^2\left(\frac{\varphi_2 - \varphi_1} {2}\right) + \cos(\varphi_1)\cdot\cos(\varphi_2) \cdot \sin^2\left(\frac{\lambda_2 - \lambda_1} {2}\right) } \right)
+\]
+where $\varphi_1, \varphi_2$ are the latitude and $\lambda_1, \lambda_2$ the longitude of the two points and \emph{r} is the radius of the earth.\\
+Since the query needed for this analysis was quite complex, all the calculations were divided among Python and SQL.
+First it was created a materialized view, which is a view that is stored in the database.\\ Its purpose is to store all the data of the table \texttt{logs}, adding four new columns:
+\begin{itemize}
+    \item \texttt{prec\_time}, which is the time of the previous log done from the same user
+    \item \texttt{time\_diff}, which is the time difference between the time of the previous and the curret log
+    \item \texttt{prec\_lat}, which is the latitude of the previous log done from the same user
+    \item \texttt{prec\_long}, which is the longitude of the previous log done from the same user
+    \item \texttt{dist\_diff}, which is the distance difference between the location of the previous and the current log
+\end{itemize}
+The creation of this materialized view was by far the most difficult part of the anlysis since the complex formula previously described was needed to be written
+in SQL language. Moreover, in order to calculate the time difference and the distance difference, it was required to access two entries of the table \texttt{logs}, so that
+the selected logs were consecutives and done by the same user. \\
+This was not an easy task since in standard SQL is not possible to execute cycles in a query. To overcome this difficulty, I made use of the \texttt{lag}
+Window function. Window functions allow to partition and order the table with respect to a specific column of the table. In our case the logs were partitioned
+by \texttt{user\_id} ordered by \texttt{createDatetime} in order to access in a consecutive way only the logs done by the same user.\\
+Once the materialized view was created, I performed the remaining calculation using Python. First the time period and the distance used to select the impossible
+logs were retrieved by the \texttt{config.ini} file. The a simple SQL query was written in order to select from the materialized view only the entries whose 
+\texttt{dist\_diff} and \texttt{time\_diff} are respectively greater and smaller than the values specified in the \texttt{config.ini} file.\\
+At this point all the impossible logs, i.e. the logs done in a time interval shorter than the one required and with a distance between the two points greater than the one specified,
+had been found.\\
+Finally all the columns of the materialized view were selected in order to give to the user all the information about those impossible logs and about the users
+who have perfomed them.
+
 
 
 
