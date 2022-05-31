@@ -315,14 +315,14 @@ The following piece of code shows an extract of the \texttt{json} file:
 "required" : ["deviceId", "id", "displayName"]
 }
 \end{python}
-The deviceID, id and displayname fileds are omitted since they are \texttt{string} and there are no differences with respect to what explained for the user \texttt{json} file.
+The deviceID, id and displayname fields are omitted since they are \texttt{string} and there are no differences with respect to what explained for the user \texttt{json} file.
 What is new are the \texttt{registrationDateTime} and \\ \texttt{approximateLastSignInDateTime} fields, which are dates and are expressed as \texttt{DateTimeOffset} format.
 
 \paragraph{Active Devices} ~\\
-The problem of the devices list retrieved from Microsoft Graph is that it contains not onlt the active devices, but also the devices that are not active anymore, such as old notebooks or pohones.
+The problem of the devices list retrieved from Microsoft Graph is that it contains not only the active devices, but also the devices that are not active anymore, such as old notebooks or phones.
 In order to overcome this problem, the devices list was filtered to obtain only the devices effectively active in a time period, determined in the \texttt{config.ini} file.\\
-After the validation the two date fields were converted in \texttt{date object}, foundamental for working with dates in Python. Then, the devices list was filtered to obtain only the devices that are active 
-in the deired period.\\
+After the validation the two date fields were converted in \texttt{date object}, fundamental for working with dates in Python. Then, the devices list was filtered to obtain only the devices that are active 
+in the desired period.\\
 The following code explains how the list of the active devices is obtained:
 \begin{python}
 def list_active_devices(devices, active_period):
@@ -354,7 +354,7 @@ The table \texttt{devices} was created, with the following characteristics:
     \includegraphics[width=12cm, height=3cm]{table-devices.png}
     \caption{table devices}
 \end{figure}\\
-The main difference with respect to the users part is that the devices stores in the database must be deletedonce they exit the active period.
+The main difference with respect to the users part is that the devices stores in the database must be deleted once they exit the active period.
 \newline\newline
 This simple piece of code solve the problem:
 \begin{python}
@@ -376,7 +376,7 @@ The most important and complex set of data was the list of all the logs done by 
 
 \paragraph{Data Retrieval} ~\\
 The most complicated task of this part of the project was to retrieve the list of all logs from Microsoft Azure, since Graph allows to retrieve at most 1000 entry at single HTTP request. To overcome this problem
-successive requestes was made. The paging system of Azure was managed included the authentication token for the next request in the header of the previous API response, when the next token field was missing it means
+successive requests were made. The paging system of Azure was managed included the authentication token for the next request in the header of the previous API response, when the next token field was missing it means
 that it was the last page.\\
 Moreover it was asked to retrieve only the logs done in a specified period, whose values was specified in the \texttt{config.ini} file.
 \begin{python}
@@ -395,7 +395,7 @@ The above code reports how the paging issue was solved: each time a page is retu
 
 \paragraph{Data Validation} ~\\
 In the same way as explained in the preceding sections, the response of the endpoint was validated, i.e., checked against a \texttt{json} file specifically written for the used endpoint.\\
-After the validation, all the date fiels were converted in \texttt{date object}, in order to be ready to be used and inserted in the database.
+After the validation, all the date fields were converted in \texttt{date object}, in order to be ready to be used and inserted in the database.
 
 \paragraph{Database insertion} ~\\
 FIrst the table logs was created, with the following structure:
@@ -410,25 +410,25 @@ was checked against the rows of the db. If the record is not found in the databa
 \subsection{Docker}
 After all the code development described in the previous sections, the script was ready and able to retrieve, validate and insert the data in the database.\\
 At this point the only problem was that the project was developed on a specific Windows machine, so every command needed to be executed from that machine in order to be able to run properly.\\
-This was a problem since the script needed to be run from any machines, including servers anche Unix environments. To overcome this issue, the whole project was packaged in a Docker container, which
+This was a problem since the script needed to be run from any machines, including servers and Unix environments. To overcome this issue, the whole project was packaged in a Docker container, which
 create an environment that could be run in every device.\\
 First I had to learn how to use the Docker technology, then I installed Docker Desktop, which is a graphic interface for create and managing docker container. Once I was ready, I created a docker container for
 my project and I wrote the needed \texttt{Dockerfile}. \\
 The \texttt{Dockerfile} is the instruction file needed to correctly setup the Docker environment and inside the following parameters was specified:
 \begin{itemize}
     \item \textbf{Python}: it was specified which version of Python to use and the standard path of Python in a generic machine.
-    \item \textbf{Packages}: the needed packaged for the project were listed in ordere to be installed inside the Docker container.
+    \item \textbf{Packages}: the needed packaged for the project were listed in order to be installed inside the Docker container.
     \item \textbf{Entrypoint}: using bash instructions, there were specified which commands to execute when the container is started.
 \end{itemize}
 Once the container was ready, it was possible to run the wanted script from every device.\\
-In our case, the commads specified in the \texttt{Entrypoint} were the ones to retrieve, validate and insert aal the needed data in the database. At the end only one command was run:
+In our case, the commands specified in the \texttt{Entrypoint} were the ones to retrieve, validate and insert aal the needed data in the database. At the end only one command was run:
 \begin{center}
 \scriptsize
 \begin{BVerbatim}
 docker run --rm -it --name python-dev-container -p 1010:1010 python-dev-image  
 \end{BVerbatim}
 \end{center}
-as a conseguence of this command the database was populated with the users, devices and logs data.\\
+as a consequence of this command the database was populated with the users, devices and logs data.\\
 In the end after the Docker technology was applied to the project, it could be run from any machine and with a single command, all the operations for retrieve the data and populate the database would be executed. 
 
 \subsection{Data Analysis}
@@ -442,12 +442,12 @@ There were performed five main analysis:
     \item Consecutive logs done by the same user in a short amount of time in two different and far locations 
 \end{enumerate}
 \newpage
-Each of the analysis described have a corrispondent command in the console menu. Those commands can be execute with an additional optional parameter which specifies the time duration in which the analysis is performed.
+Each of the analysis described have a correspondent command in the console menu. Those commands can be execute with an additional optional parameter which specifies the time duration in which the analysis is performed.
 If the parameter is not inserted the default interval is ninety days from the current date. 
 
 \subsubsection{Analysis creation}
-All the statistics listed before were realized twice: first they were created using only standard SQL without any extention, i.e., each statistic was a single query whose complexity varied from one to the other.\\
-SQL is an achronim for \texttt{Structured Query Language}, which is a standardised language that is used to interrogate relational databases.\\
+All the statistics listed before were realized twice: first they were created using only standard SQL without any extension, i.e., each statistic was a single query whose complexity varied from one to the other.\\
+SQL is an achromic for \texttt{Structured Query Language}, which is a standardized language that is used to interrogate relational databases.\\
 In a second moment everything done in SQL was realized again using Python, i.e., integrating Python coding with more simple queries to the database.\\
 In this section there will not be any code, but all the SQL and Python files can be find in the \href{https:\\github.com}{project repository}.
 
@@ -456,27 +456,27 @@ The first analysis create was the one dedicated to find all the employees who ha
 In order to select only the users who have never logged in, it was needed to select the list of users present in the table \texttt{users} and not present in the table \texttt{logs}.\\
 Initially it was though to use the \texttt{NOT EXISTS} or the \texttt{EXCEPT} operator, that as the names suggest select the entry available in a table and not in the other one.
 However, it was found out that these two methods are not very efficient, so it was finally choses to adopt the \texttt{LEFT JOIN} operator, which is a kind of join operator which selects the rows of the 
-first table that are not present in the second one. By adopting the join operator, the efficienty of the query incredibly increased.\\
+first table that are not present in the second one. By adopting the join operator, the efficiency of the query incredibly increased.\\
 Since the query was a very simple one, the Python implementation was simply the code needed to run the query.\\
-At the end, after running the corrispondent command of this analysis, the \texttt{id} and \texttt{displayName} of the selected users were shown as result.
+At the end, after running the correspondent command of this analysis, the \texttt{id} and \texttt{displayName} of the selected users were shown as result.
 
 \newpage
 \subsubsection{Unused devices}
 In a second moment it was necessary to create a second analysis, similar to the first one, but regarding the devices. It was indeed needed to find all the devices that have never received a login.\\
 The procedure was similar to the one adopted in the first analysis, so we needed to select only the devices available in the table \texttt{devices} and not in the table \texttt{logs}.\\
-Since the queory was similar to the previous one, it was directly done using the \texttt{LEFT JOIN} to select only the rows present in the first table and not in the second one.\\
+Since the query was similar to the previous one, it was directly done using the \texttt{LEFT JOIN} to select only the rows present in the first table and not in the second one.\\
 Once again the Python implementation was only the code needed to run the query.\\
-At the end, after running the corrispondent command, the \texttt{id} and \texttt{displayName} of the selected devices were shown as result.
+At the end, after running the correspondent command, the \texttt{id} and \texttt{displayName} of the selected devices were shown as result.
 
 \subsubsection{Shared devices}
 The third analysis is the one that was created to find all the devices that are shared with more than one employee and all the login done on those devices.\\
-This was a more complex query, since more data manipulations were needed before the expected result coulb be selected.\\
+This was a more complex query, since more data manipulations were needed before the expected result could be selected.\\
 Itt was needed to select from the logs table only the logs done on devices which had received login from more than one different users.\\
 Firs it was created a subquery in order to select from the table \texttt{logs} the \texttt{id} of the devices on which have been done access from more than one user.\\ 
 Then the result of the subquery was joined with the table \texttt{logs} in order to select only the logs of the devices whose id was selected before. Finally the result was grouped using the \texttt{group by}
 statement, in order to have not repeated logs done from the same user on the same device. As last step the list of the selected logs was ordered, through the \texttt{order by} operator to have a more 
 readable result.\\  
-This analysis was more complext with respect to the previous one, but once the logic of the query was leared, everything could be easily written in SQL language.
+This analysis was more complex with respect to the previous one, but once the logic of the query was learned, everything could be easily written in SQL language.
 For this reason the Python implementation is, once again, the simple code needed to run a SQL query.\\
 At the end, the result of the main menu command shows the \texttt{id} and \texttt{displayName} of the shared devices and the \texttt{id} and \texttt{displayName} of the users who have done login on them.
 
@@ -485,16 +485,16 @@ This statistics was created to find all the users who have done login only on de
 First it was needed a subquery to find all the entries from the table \texttt{logs} with the column \texttt{deviceId} equal to \texttt{NULL}, i.e., all the logs done on an unknown device.\\
 Then the table \texttt{users} was joined with the table \texttt{logs} in order to have information about both users and logs. From the result of this join operation, there were selected only the rows present
 in the result of the subquery previously written. By doing this we have obtained only the entries corresponding to the logs done on unknown devices.\\
-Finally, it was required to reuturn information about the users who have done those logs, so from the final result, only the columns \texttt{userID} and \texttt{userDisplayname} were selected.\\
-The result of the command corrispondent to this analysis are the \texttt{id} and \texttt{displayName} of the users who have done login on unknown devices.\\
+Finally, it was required to return information about the users who have done those logs, so from the final result, only the columns \texttt{userID} and \texttt{userDisplayname} were selected.\\
+The result of the command correspondent to this analysis are the \texttt{id} and \texttt{displayName} of the users who have done login on unknown devices.\\
 Once again the Python implementation is the simple code needed to run the corresponding SQL query.
 
 \subsubsection{Impossible logs}
-The last analysis was realized to find all the logs there were physycally impossible, i.e., the logs done in a short time interval and in two different and far location.
+The last analysis was realized to find all the logs there were physically impossible, i.e., the logs done in a short time interval and in two different and far location.
 For example two successive logs done from the same user in a time interval of two minutes and in two location 100 km apart. This example is clearly an impossible log, since it is not possible to travel 100 km
 in only two minutes.\\
 In the \texttt{logs} table, the position of a specific log is given by the latitude and longitude of the device on which the log was done.\\
-PostgreSQL offers an additional module called PostGIS, which is a module that allows to perform spatial queries on the database. This extention is complex and it is used when very precises measurements are
+PostgreSQL offers an additional module called PostGIS, which is a module that allows to perform spatial queries on the database. This extension is complex and it is used when very precises measurements are
 needed.\\
 Since it was decided to use only standard SQL and a precise measurement was not needed for the purpose of the analysis, it was chosen to directly calculate the distances between the two points, using the
 \href{https://en.wikipedia.org/wiki/Haversine_formula}{Haversine formula}:
@@ -506,14 +506,14 @@ Since the query needed for this analysis was quite complex, all the calculations
 First it was created a materialized view, which is a view that is stored in the database.\\ Its purpose is to store all the data of the table \texttt{logs}, adding four new columns:
 \begin{itemize}
     \item \texttt{prec\_time}, which is the time of the previous log done from the same user
-    \item \texttt{time\_diff}, which is the time difference between the time of the previous and the curret log
+    \item \texttt{time\_diff}, which is the time difference between the time of the previous and the current log
     \item \texttt{prec\_lat}, which is the latitude of the previous log done from the same user
     \item \texttt{prec\_long}, which is the longitude of the previous log done from the same user
     \item \texttt{dist\_diff}, which is the distance difference between the location of the previous and the current log
 \end{itemize}
-The creation of this materialized view was by far the most difficult part of the anlysis since the complex formula previously described was needed to be written
+The creation of this materialized view was by far the most difficult part of the analysis since the complex formula previously described was needed to be written
 in SQL language. Moreover, in order to calculate the time difference and the distance difference, it was required to access two entries of the table \texttt{logs}, so that
-the selected logs were consecutives and done by the same user. \\
+the selected logs were consecutive and done by the same user. \\
 This was not an easy task since in standard SQL is not possible to execute cycles in a query. To overcome this difficulty, I made use of the \texttt{lag}
 Window function. Window functions allow to partition and order the table with respect to a specific column of the table. In our case the logs were partitioned
 by \texttt{user\_id} ordered by \texttt{createDatetime} in order to access in a consecutive way only the logs done by the same user.\\
@@ -523,15 +523,48 @@ logs were retrieved by the \texttt{config.ini} file. The a simple SQL query was 
 At this point all the impossible logs, i.e. the logs done in a time interval shorter than the one required and with a distance between the two points greater than the one specified,
 had been found.\\
 Finally all the columns of the materialized view were selected in order to give to the user all the information about those impossible logs and about the users
-who have perfomed them.
-
-
-
-
-
-
-
+who have performed them.
 
 \subsection{Report Creation}
+The final part of the project was to create visual reports of all the analysis described in the previous section.\\
+The software used to create those report is Power Bi, which is an interactive data visualization software product developed by Microsoft. Power BI is a collection of software services,
+apps, and connectors that work together to turn unrelated sources of data into coherent, visually immersive, and interactive insights.
+In our case the data source was the database, which was indeed connected to Power Bi. \\
+The peculiarity and great advantage of this software is that it allows to import the data and store an internal copy. Then these data may be manipulated while the original copy in the database is not
+subject to any modification.\\
+Since I was new to this technology, I was given the possibility to follow a one day workshop about Power Bi, directly organized by a Microsoft partner company called BitBang. Thanks to this informative
+session, I learned the basis of the software. Successively I keep learning in order to be able to create clean and understandable reports.
+
+\paragraph{Informations} ~\\
+This section will be rich of images, since I think it is not possible to describe graphic reports without the use of images of the reports themselves. \\
+All the captions in the reports will be in italian, since Ubroker is an italian company and I was asked to write in italian.\\
+Moreover the images will have some censured parts, since the reports include private information about the employee that, for privacy issues, cannot be shown in a public document.
+
+\subsubsection{Data Source}
+The original data source was the database previously described, with the table \texttt{users}, \texttt{devices} and \texttt{logs}. Moreover some other view were created, in order to ease the creation of the
+reports.\\
+In addition to what was present in the database, some table was also created inside Power Bi. using his own language, called DAX which is a collection of functions, operators, and constants that can be used 
+in a formula, or expression, to calculate and return one or more values. For example the join of two table was one of the simple actions executed using DAX.
+
+\newpage
+\subsubsection{Logs Overview}
+The first report was created to show an overview of the logs done, showing the number of login per each day, the users who have done them and the devices used. Moreover a map of the logs location is shown as
+well.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth, height=8cm]{log-per-day.png}
+    \caption{help menu}
+\end{figure}\\
+The above image represent the first report, which gives information about the logs done each day. It is composed by several visual element, i.e., the object used in Power Bi to realize the report.\\
+The first most outstanding visual element is a bar chart, which shows the number of login per each day, then there are two table, which show the users who have done the login and the devices used.\\
+There is then a map of the logs and a slicer, which allows to select the time period of the logs to be shown.\\
+The peculiarity of a Power Bi reports, which is not visible though an image, is its dynamism 
+CONTINUARE DISCORSO INTERATTIVITA'
+
+
+
+
+
+
 \section{Conclusion and Considerations}
 \end{document}
