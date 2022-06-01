@@ -558,9 +558,17 @@ well.
 The above image represent the first report, which gives information about the logs done each day. It is composed by several visual element, i.e., the object used in Power Bi to realize the report.\\
 The first most outstanding visual element is a bar chart, which shows the number of login per each day, then there are two table, which show the users who have done the login and the devices used.\\
 There is then a map of the logs and a slicer, which allows to select the time period of the logs to be shown.\\
-The peculiarity of a Power Bi reports, which is not visible though an image, is its dynamism 
-CONTINUARE DISCORSO INTERATTIVITA'
+The peculiarity of a Power Bi reports, which is not visible through an image, is its dynamism. Each time we interact with an object, we modifies the other ones too, for example if we select a single day from the
+bar chart, the two tables will show only the users and the devices interested in that day. The map will be show the location of the logs of the selected day only.\\
+This mechanism works also the other day, if we select a user then the report will show only the information regarding the selected employee.\\
 
+\subsubsection{Users and Devices}
+The aim of these reports is to create a visual representation of the result of the analysis described in the precedent section. \\
+In order to represent all the analysis reports about the devices which have never received a login and users who have never done a login were created as well.\\
+This two reports were created using DAX language to join the tables directly inside Power Bi and avoiding the creation of two additional views in the database.\\
+No images about those two reports will be inserted, since they both consist of a table, a slice to select the time period and a counter to show the results numbers.
+
+\subsubsection{Shared Devices}
 
 
 
