@@ -469,6 +469,7 @@ Once again the Python implementation was only the code needed to run the query.\
 At the end, after running the correspondent command, the \texttt{id} and \texttt{displayName} of the selected devices were shown as result.
 
 \subsubsection{Shared devices}
+\label{subsubsec:shared}
 The third analysis is the one that was created to find all the devices that are shared with more than one employee and all the login done on those devices.\\
 This was a more complex query, since more data manipulations were needed before the expected result could be selected.\\
 Itt was needed to select from the logs table only the logs done on devices which had received login from more than one different users.\\
@@ -553,13 +554,13 @@ well.
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth, height=8cm]{log-per-day.png}
-    \caption{help menu}
+    \caption{logs per day report}
 \end{figure}\\
 The above image represent the first report, which gives information about the logs done each day. It is composed by several visual element, i.e., the object used in Power Bi to realize the report.\\
-The first most outstanding visual element is a bar chart, which shows the number of login per each day, then there are two table, which show the users who have done the login and the devices used.\\
+The first most outstanding visual element is an histogram, which shows the number of login per each day, then there are two table, which show the users who have done the login and the devices used.\\
 There is then a map of the logs and a slicer, which allows to select the time period of the logs to be shown.\\
 The peculiarity of a Power Bi reports, which is not visible through an image, is its dynamism. Each time we interact with an object, we modifies the other ones too, for example if we select a single day from the
-bar chart, the two tables will show only the users and the devices interested in that day. The map will be show the location of the logs of the selected day only.\\
+histogram, the two tables will show only the users and the devices interested in that day. The map will be show the location of the logs of the selected day only.\\
 This mechanism works also the other day, if we select a user then the report will show only the information regarding the selected employee.\\
 
 \subsubsection{Users and Devices}
@@ -569,6 +570,21 @@ This two reports were created using DAX language to join the tables directly ins
 No images about those two reports will be inserted, since they both consist of a table, a slice to select the time period and a counter to show the results numbers.
 
 \subsubsection{Shared Devices}
+This report is another important one, since it shows the devices that have been shared by the users.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth, height=8cm]{shared-devices.png}
+    \caption{help menu}
+\end{figure}\\
+This model is composed by two vertical bar chart: the left one shows the number of users for a shared devices, while the one on the right shows the number of shared devices for each user.
+There are then \texttt{users} and \texttt{devices} tables, used to show the list of users and devices included in the report. \\
+Last a counter is used to show how many devices are shared with respect to the total number.
+To create this report, it was necessary to create a view in the database, since it was too difficult to express a complex query in DAX language. The created view is the result of the query explained in 
+\href{subsubsec:shared}{4.8.4} section, which is then memorized and used to build the final report.
+
+
+
+
 
 
 
