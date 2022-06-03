@@ -196,7 +196,7 @@ and retrieve the result. Finally, the cursor is closed and the \texttt{conn} obj
 During the development of the project the database was constantly modified: some tables was added, removed or altered. In order to keep track of all the changes, it was created a table named \texttt{migrations},
 used to store the changes made to the database. The table is composed of two columns: the migration version and exact date and time of the entry insertion.\\
 The concept of migrations was widely known in the company IT department, where the team makes a intense use of the \href{https://www.doctrine-project.org/projects/doctrine-migrations/en/3.3/index.html}{migration doctrine}, 
-applied to PHP. In order to aligne mt project with the company standards, it was chosen to use the concept of migrations. \\
+applied to PHP. In order to align my project with the company standards, it was chosen to use the concept of migrations. \\
 There exist Python libraries useful to manage all the migrations, but since this is a small project, instead of learn the use of a complex library, it was chosen to personally develop the functions needed for the management 
 of the database migrations.
 \begin{figure}[h]
@@ -261,7 +261,7 @@ The request is done inserting in the header the authorization token, whose impor
 
 \paragraph{Response Validation} ~\\
 Once the response of the endpoint was available, it needs to be validate, i.e., it must be checked that all the required fields are present and in the correct format.\\
-The response of every API is a \texttt{json} text, so it is checked against a \texttt{json} file specifically writte for the used endpoint. This is performed using the \texttt{validate} module of the 
+The response of every API is a \texttt{json} text, so it is checked against a \texttt{json} file specifically written for the used endpoint. This is performed using the \texttt{validate} module of the 
 \texttt{jsonschema} library.
 The following snippet reports the \texttt{json} file written to check each object of response of the users endpoint:
 \begin{python}
@@ -272,19 +272,19 @@ The following snippet reports the \texttt{json} file written to check each objec
     }
 \end{python}
 It states that two fields are expected: \texttt{id} and \texttt{displayName} and both must be of string type, i.e., they must be a text. Moreover, the \texttt{required} instruction imposes that the \texttt{id} field
-must be present, othterwise the validation will fail, while the \texttt{displayname} may be absent.\\
+must be present, otherwise the validation will fail, while the \texttt{displayname} may be absent.\\
 This \texttt{required} instruction was specified for the \texttt{id} since it will later be used a primary key in the database, so it cannot be a null value.
 
 \paragraph{Database Insertion} ~\\
 Finally, after the data was retrieved and validated, they are ready to be inserted in the database.\\
-Through a migration (see section \hyperref[subsec:migrations]{4.4} for furhter information) the table \texttt{users} was created, with the following characteristics:
+Through a migration (see section \hyperref[subsec:migrations]{4.4} for further information) the table \texttt{users} was created, with the following characteristics:
 \begin{figure}[h]
     \centering
     \includegraphics[width=10cm, height=2cm]{table-users.png}
     \caption{table users}
 \end{figure}\\
 
-One the users list is available, it must be inserted in the database. This is done though a cycle and for each entry of the list there are two possiblities:
+One the users list is available, it must be inserted in the database. This is done though a cycle and for each entry of the list there are two possibilities:
 \begin{itemize}
     \item \texttt{insert}. This command insert a user in the table if and only if the user is not already present in the table.
     \item \texttt{update}. If the user is already present in the table, this command updates the user's information.
@@ -482,6 +482,7 @@ For this reason the Python implementation is, once again, the simple code needed
 At the end, the result of the main menu command shows the \texttt{id} and \texttt{displayName} of the shared devices and the \texttt{id} and \texttt{displayName} of the users who have done login on them.
 
 \subsubsection{Logs on unknown devices}
+\label{subsubsec:unknown}
 This statistics was created to find all the users who have done login only on devices not registered in the company system.\\
 First it was needed a subquery to find all the entries from the table \texttt{logs} with the column \texttt{deviceId} equal to \texttt{NULL}, i.e., all the logs done on an unknown device.\\
 Then the table \texttt{users} was joined with the table \texttt{logs} in order to have information about both users and logs. From the result of this join operation, there were selected only the rows present
@@ -491,6 +492,7 @@ The result of the command correspondent to this analysis are the \texttt{id} and
 Once again the Python implementation is the simple code needed to run the corresponding SQL query.
 
 \subsubsection{Impossible logs}
+\label{subsubsec:impossible}
 The last analysis was realized to find all the logs there were physically impossible, i.e., the logs done in a short time interval and in two different and far location.
 For example two successive logs done from the same user in a time interval of two minutes and in two location 100 km apart. This example is clearly an impossible log, since it is not possible to travel 100 km
 in only two minutes.\\
@@ -574,21 +576,45 @@ This report is another important one, since it shows the devices that have been 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth, height=8cm]{shared-devices.png}
-    \caption{help menu}
+    \caption{shared devices report}
 \end{figure}\\
 This model is composed by two vertical bar chart: the left one shows the number of users for a shared devices, while the one on the right shows the number of shared devices for each user.
 There are then \texttt{users} and \texttt{devices} tables, used to show the list of users and devices included in the report. \\
 Last a counter is used to show how many devices are shared with respect to the total number.
 To create this report, it was necessary to create a view in the database, since it was too difficult to express a complex query in DAX language. The created view is the result of the query explained in 
-\href{subsubsec:shared}{4.8.4} section, which is then memorized and used to build the final report.
+\hyperref[subsubsec:shared]{4.8.4} section, which is then memorized and used to build the final report.
 
+\subsubsection{Users with logs on unknown devices}
+In this section it will be described the report that shows the users that have done a login on unknown devices. \\
+Similarly to the previous one, to realize this report, it was previously created a view in the database, which is the result of the query explained in \hyperref[subsubsec:unknown]{4.8.5} section.\\
+Once the view was ready, it was imported in Power Bi and used as data source. This specific report has not any new visual element with respect to the previous ones. It is indeed composed by a table which
+shows the users who have done logs only on devices not registered in the company database.
+There is a then a slicer to select the time period of the logs to be shown, a counter which shows the users count and finally an histogram which reports the number of login on unknown devices done each day.
 
+\subsubsection{Impossible Logs}
+The last report is the one representing the impossible logs analysis. That analysis was the most difficult one, consequently the report was difficult too.\\
+The report is composed by three page, all showing different aspects of the logs impossible to be done. The realization of those three pages required the creation of two views in the database: one containing
+all the logs with with the fields \texttt{dist\_diff} and \texttt{time\_diff} and the other one containing only the couples of impossible logs, which is basically the result of the analysis explained in
+\hyperref[subsubsec:impossible]{4.8.6} section.\\
+In the next page it is shown an image of the first page of this report, which is composed by a table showing all the impossible logs and highlighting the time interval and the distance difference between two
+consecutive logs. There is then a bar chart showing the users who have done these logs and how many times they have done them. Finally it was inserted an histogram to show how many impossible logs were done
+every day.
+\newline\newline\newline\newline
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth, height=8cm]{impossible-logs.png}
+    \caption{impossible logs report}
+\end{figure}\\
+The second page of the report is composed by two maps showing the location of a couple of impossible logs and by an object showing the date and time of the log reported in the map.\\
+The two pages of the report are connect, i.e., thanks to a functionality called \emph{drill through}, we can select a log from the table in the first page and in the second page will be shown the position
+of the selected log and the preceding one.\\
+In the third and last page of the report, it was required to have the possibility to select from a table with all the logs only the ones that are or are not possible. To fulfil the request, the view containing
+all the logs, was modified using DAX language and a column \texttt{validity} was added to the table, this new column may assume only two values: yes or no.\\
+specifically the last page is composed by a table, with the added column, a filter used to selected the wanted logs and by a bar chart that, similarly to the one in the first page, shows the logs count per user.
 
-
-
-
-
-
-
+\newpage
 \section{Conclusion and Considerations}
+
+
+
 \end{document}
